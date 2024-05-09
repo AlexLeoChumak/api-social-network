@@ -27,11 +27,10 @@ export class FeedController {
     return this.feedService.findAllPosts();
   }
 
-  // ???
-  @Get()
+  @Get('pagination')
   findSelected(
-    @Query('take') take: number = 1,
-    @Query('skip') skip: number = 1,
+    @Query('take') take: number,
+    @Query('skip') skip: number,
   ): Observable<FeedPost[]> {
     take = take > 20 ? 20 : take;
     return this.feedService.findPosts(take, skip);
