@@ -29,6 +29,7 @@ export class FeedService {
     );
   }
 
+  // аналог метода для постепенного ролучения постов для бесконечного скролла
   // findPosts(take: number, skip: number): Observable<FeedPost[]> {
   //   return from(
   //     this.feedPostRepository
