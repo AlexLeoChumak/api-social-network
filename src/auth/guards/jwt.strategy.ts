@@ -13,6 +13,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    return { ...payload.user };
+    try {
+      if (!payload || !payload.user) {
+        console.error('Invalid payload or user data in token.');
+      }
+
+      return { ...payload.user };
+    } catch (error) {
+      console.error(error.message);
+    }
   }
 }

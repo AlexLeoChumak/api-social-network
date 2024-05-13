@@ -23,7 +23,10 @@ export class FeedController {
 
   @UseGuards(JwtGuard)
   @Post()
-  create(@Body() feedPost: FeedPost, @Request() req): Observable<FeedPost> {
+  create(
+    @Body() feedPost: FeedPost,
+    @Request() req: any,
+  ): Observable<FeedPost> {
     return this.feedService.createPost(req.user, feedPost);
   }
 
