@@ -5,10 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { FeedService } from './services/feed.service';
 import { FeedController } from './controllers/feed.controller';
 import { Repository } from 'typeorm';
+import { AuthModule } from 'src/auth/auth.module';
+import { IsCreatorGuard } from './guards/is-creator.guard';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([FeedPostEntity])],
-  providers: [FeedService, Repository],
+  imports: [TypeOrmModule.forFeature([FeedPostEntity]), AuthModule],
+  providers: [FeedService, Repository, IsCreatorGuard],
   controllers: [FeedController],
 })
 export class FeedModule {}
