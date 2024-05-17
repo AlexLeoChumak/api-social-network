@@ -23,24 +23,25 @@ export class FeedService {
     return from(this.feedPostRepository.find());
   }
 
-  findPosts(take: number, skip: number): Observable<FeedPost[]> {
-    return from(
-      this.feedPostRepository.findAndCount({ take, skip }).then(([posts]) => {
-        return <FeedPost[]>posts;
-      }),
-    );
-  }
-
-  // аналог метода для постепенного получения постов для бесконечного скролла
   // findPosts(take: number, skip: number): Observable<FeedPost[]> {
   //   return from(
-  //     this.feedPostRepository
-  //       .createQueryBuilder('feed')
-  //       .take(take)
-  //       .skip(skip)
-  //       .getMany(),
+  //     this.feedPostRepository.findAndCount({ take, skip }).then(([posts]) => {
+  //       return <FeedPost[]>posts;
+  //     }),
   //   );
   // }
+
+  findPosts(take: number, skip: number): Observable<FeedPost[]> {
+    return from(
+      this.feedPostRepository
+        .createQueryBuilder('feedPosts')
+        .innerJoinAndSelect('feedPosts.author', 'author')
+        .orderBy('feedPosts.createdAt', 'DESC')
+        .take(take)
+        .skip(skip)
+        .getMany(),
+    );
+  }
 
   updatePost(id: number, feedPost: FeedPost): Observable<UpdateResult> {
     return from(this.feedPostRepository.update(id, feedPost));
