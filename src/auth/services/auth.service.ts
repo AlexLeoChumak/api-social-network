@@ -82,6 +82,10 @@ export class AuthService {
       }),
     ).pipe(
       switchMap((user: User) => {
+        if (!user || !user.email) {
+          return throwError(() => new Error('User not found'));
+        }
+
         return from(bcrypt.compare(password, user.password)).pipe(
           map((isValidPassword: boolean) => {
             if (isValidPassword) {
