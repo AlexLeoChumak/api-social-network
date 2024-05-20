@@ -39,7 +39,7 @@ export class UserService {
   //     return from(this.userRepository.update(id, { imagePath }));
   //   }
 
-  findImageNameByUserId(id: number): Observable<string> {
+  findImagePathByUserId(id: number): Observable<string> {
     return from(this.userRepository.findOne({ where: { id } })).pipe(
       map((user: User) => {
         delete user.password;
