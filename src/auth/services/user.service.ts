@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Observable, from, map } from 'rxjs';
+import { Observable, catchError, from, map, throwError } from 'rxjs';
 import { User } from '../models/user.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult } from 'typeorm';
@@ -20,6 +20,10 @@ export class UserService {
         delete user.password;
         return user;
       }),
+      catchError((err) => {
+        console.error(err);
+        return throwError(() => err);
+      }),
     );
   }
 
@@ -36,10 +40,14 @@ export class UserService {
   //   }
 
   findImageNameByUserId(id: number): Observable<string> {
-    return from(this.userRepository.findOne({ id })).pipe(
+    return from(this.userRepository.findOne({ where: { id } })).pipe(
       map((user: User) => {
         delete user.password;
         return user.imagePath;
+      }),
+      catchError((err) => {
+        console.error(err);
+        return throwError(() => err);
       }),
     );
   }
