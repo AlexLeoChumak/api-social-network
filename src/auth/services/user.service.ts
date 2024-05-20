@@ -34,4 +34,13 @@ export class UserService {
   //   updateUserImageById(id: number, imagePath: string): Observable<UpdateResult> {
   //     return from(this.userRepository.update(id, { imagePath }));
   //   }
+
+  findImageNameByUserId(id: number): Observable<string> {
+    return from(this.userRepository.findOne({ id })).pipe(
+      map((user: User) => {
+        delete user.password;
+        return user.imagePath;
+      }),
+    );
+  }
 }
