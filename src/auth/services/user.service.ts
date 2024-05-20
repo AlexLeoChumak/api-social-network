@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Observable, from, map } from 'rxjs';
 import { User } from '../models/user.interface';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { UserEntity } from '../models/user.entity';
 
 @Injectable()
@@ -22,4 +22,16 @@ export class UserService {
       }),
     );
   }
+
+  updateUserImageById(id: number, imagePath: string): Observable<UpdateResult> {
+    const user: User = new UserEntity();
+    user.id = id;
+    user.imagePath = imagePath;
+
+    return from(this.userRepository.update(id, user));
+  }
+  //аналог метода
+  //   updateUserImageById(id: number, imagePath: string): Observable<UpdateResult> {
+  //     return from(this.userRepository.update(id, { imagePath }));
+  //   }
 }
