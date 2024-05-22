@@ -9,6 +9,7 @@ import { JwtGuard } from './guards/jwt.guard';
 import { JwtStrategy } from './guards/jwt.strategy';
 import { RolesGuard } from './guards/roles.guard';
 import { UserService } from './services/user.service';
+import { UserController } from './controllers/user.controller';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { UserService } from './services/user.service';
     TypeOrmModule.forFeature([UserEntity]),
   ],
   providers: [AuthService, JwtGuard, JwtStrategy, RolesGuard, UserService],
-  controllers: [AuthController],
+  controllers: [AuthController, UserController],
   exports: [AuthService, UserService],
 })
 export class AuthModule {}
