@@ -1,7 +1,9 @@
 import {
   Controller,
+  Get,
   Post,
   Request,
+  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -46,6 +48,17 @@ export class UserController {
 
         removeFile(fullImagePath);
         return of({ error: 'File content does not match extension' });
+      }),
+    );
+  }
+
+  @UseGuards(JwtGuard)
+  @Get('image')
+  findImage(@Request() req, @Res() res): Observable<object> {
+    const userId = req.user.id;
+    return this.userService.findImageNameByUserId(userId).pipe(
+      switchMap((imageName: string) => {
+        return of(res.sendFile(imageName, { root: './images' }));
       }),
     );
   }
