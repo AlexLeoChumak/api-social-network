@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Observable, catchError, from, map, throwError } from 'rxjs';
-import { User } from '../models/user.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult } from 'typeorm';
+
+import { User } from '../models/user.interface';
 import { UserEntity } from '../models/user.entity';
 
 @Injectable()
@@ -27,19 +28,25 @@ export class UserService {
     );
   }
 
+  // updateUserImageById(id: number, imagePath: string): Observable<UpdateResult> {
+  //   const user: User = new UserEntity();
+  //   user.id = id;
+  //   user.imagePath = imagePath;
+  //   console.log('user', user);
+
+  //   return from(this.userRepository.update(id, user));
+  // }
+
   updateUserImageById(id: number, imagePath: string): Observable<UpdateResult> {
-    const user: User = new UserEntity();
-    user.id = id;
-    user.imagePath = imagePath;
-
-    return from(this.userRepository.update(id, user));
+    return from(this.userRepository.update(id, { imagePath })).pipe(
+      catchError((err) => {
+        console.error(err);
+        return throwError(() => err);
+      }),
+    );
   }
-  //аналог метода
-  //   updateUserImageById(id: number, imagePath: string): Observable<UpdateResult> {
-  //     return from(this.userRepository.update(id, { imagePath }));
-  //   }
 
-  findImagePathByUserId(id: number): Observable<string> {
+  findImageNameByUserId(id: number): Observable<string> {
     return from(this.userRepository.findOne({ where: { id } })).pipe(
       map((user: User) => {
         delete user.password;
