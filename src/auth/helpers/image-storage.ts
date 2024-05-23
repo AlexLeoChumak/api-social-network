@@ -1,10 +1,8 @@
 import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
-
-const fs = require('fs');
+import fs from 'fs';
 import FileType from 'file-type';
-
-import path from 'path';
+import path = require('path');
 
 type validFileExtension = 'png' | 'jpg' | 'jpeg';
 type validMimeType = 'image/png' | 'image/jpg' | 'image/jpeg';
