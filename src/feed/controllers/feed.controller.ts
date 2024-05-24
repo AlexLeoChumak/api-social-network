@@ -8,6 +8,7 @@ import {
   Put,
   Query,
   Request,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
@@ -16,17 +17,18 @@ import { DeleteResult, UpdateResult } from 'typeorm';
 import { FeedService } from '../services/feed.service';
 import { FeedPost } from '../models/feedPost.interface';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Role } from 'src/auth/models/role.enum';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
+// import { Roles } from 'src/auth/decorators/roles.decorator';
+// import { Role } from 'src/auth/models/role.enum';
+// import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { IsCreatorGuard } from '../guards/is-creator.guard';
 
 @Controller('feed')
 export class FeedController {
   constructor(private feedService: FeedService) {}
 
-  @Roles(Role.ADMIN, Role.PREMIUM)
-  @UseGuards(JwtGuard, RolesGuard)
+  // @Roles(Role.ADMIN, Role.PREMIUM)
+  // @UseGuards(JwtGuard, RolesGuard)
+  @UseGuards(JwtGuard)
   @Post()
   create(
     @Body() feedPost: FeedPost,
@@ -40,6 +42,7 @@ export class FeedController {
     return this.feedService.findAllPosts();
   }
 
+  @UseGuards(JwtGuard)
   @Get('pagination')
   findSelected(
     @Query('take') take: number,
@@ -62,5 +65,11 @@ export class FeedController {
   @Delete(':id')
   delete(@Param('id') id: number): Observable<DeleteResult> {
     return this.feedService.deletePost(id);
+  }
+
+  @Get('image/:fileName')
+  findImageByName(@Param('fileName') fileName: string, @Res() res) {
+    if (!fileName || ['null', '[null]'].includes(fileName)) return;
+    return res.sendFile(fileName, { root: './images' });
   }
 }
