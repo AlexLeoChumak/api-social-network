@@ -43,6 +43,7 @@ export class UserController {
       switchMap((isFileLegit: boolean) => {
         if (isFileLegit) {
           const userId = req.user.id;
+
           return this.userService.updateUserImageById(userId, fileName);
         }
 
