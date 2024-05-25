@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Observable, catchError, from, map, throwError } from 'rxjs';
+import { Observable, catchError, from, map, tap, throwError } from 'rxjs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult } from 'typeorm';
 
@@ -32,13 +32,13 @@ export class UserService {
   //   const user: User = new UserEntity();
   //   user.id = id;
   //   user.imagePath = imagePath;
-  //   console.log('user', user);
 
   //   return from(this.userRepository.update(id, user));
   // }
 
   updateUserImageById(id: number, imagePath: string): Observable<UpdateResult> {
     return from(this.userRepository.update(id, { imagePath })).pipe(
+      tap((res) => (res.raw = imagePath)),
       catchError((err) => {
         console.error(err);
         return throwError(() => err);
