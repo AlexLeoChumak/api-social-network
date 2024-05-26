@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   Post,
@@ -17,9 +18,10 @@ import {
   removeFile,
   saveImageToStorage,
 } from '../helpers/image-storage';
-import { Observable, of, switchMap } from 'rxjs';
+import { Observable, map, of, switchMap } from 'rxjs';
 import { join } from 'path';
 import { UpdateResult } from 'typeorm';
+import { TokenFromFront } from '../models/tokenFromFront.interface';
 
 @Controller('user')
 export class UserController {
@@ -73,5 +75,15 @@ export class UserController {
         return of({ imageName });
       }),
     );
+  }
+
+  @UseGuards(JwtGuard)
+  @Post('update-image')
+  updatingTokenAfterImageChange(
+    @Body() decodeToken: TokenFromFront,
+  ): Observable<{ token: string }> {
+    return this.userService
+      .updatingTokenAfterImageChange(decodeToken)
+      .pipe(map((jwt: string) => ({ token: jwt })));
   }
 }
