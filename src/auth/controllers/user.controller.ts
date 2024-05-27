@@ -9,7 +9,10 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { Observable, map, of, switchMap } from 'rxjs';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { join } from 'path';
+import { UpdateResult } from 'typeorm';
 
 import { UserService } from '../services/user.service';
 import { JwtGuard } from '../guards/jwt.guard';
@@ -18,10 +21,7 @@ import {
   removeFile,
   saveImageToStorage,
 } from '../helpers/image-storage';
-import { Observable, map, of, switchMap } from 'rxjs';
-import { join } from 'path';
-import { UpdateResult } from 'typeorm';
-import { TokenFromFront } from '../models/tokenFromFront.interface';
+import { DecodeTokenFromFront } from '../models/decodeTokenFromFront.interface';
 
 @Controller('user')
 export class UserController {
@@ -79,11 +79,11 @@ export class UserController {
 
   @UseGuards(JwtGuard)
   @Post('update-image')
-  updatingTokenAfterImageChange(
-    @Body() decodeToken: TokenFromFront,
+  updatingTokenAfterChangingProfilePicture(
+    @Body() decodeToken: DecodeTokenFromFront,
   ): Observable<{ token: string }> {
     return this.userService
-      .updatingTokenAfterImageChange(decodeToken)
+      .updatingTokenAfterChangingProfilePicture(decodeToken)
       .pipe(map((jwt: string) => ({ token: jwt })));
   }
 }
