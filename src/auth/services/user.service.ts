@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { Observable, catchError, from, map, tap, throwError } from 'rxjs';
+import { Observable, catchError, from, map, throwError } from 'rxjs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 
 import { User } from '../models/user.interface';
 import { UserEntity } from '../models/user.entity';
-import { TokenFromFront } from '../models/tokenFromFront.interface';
+import { DecodeTokenFromFront } from '../models/decodeTokenFromFront.interface';
 
 @Injectable()
 export class UserService {
@@ -41,7 +41,10 @@ export class UserService {
 
   updateUserImageById(id: number, imagePath: string): Observable<UpdateResult> {
     return from(this.userRepository.update(id, { imagePath })).pipe(
-      tap((res) => (res.raw = imagePath)),
+      map((response) => ({
+        ...response,
+        imagePath,
+      })),
       catchError((err) => {
         console.error(err);
         return throwError(() => err);
@@ -49,8 +52,8 @@ export class UserService {
     );
   }
 
-  updatingTokenAfterImageChange(
-    decodeToken: TokenFromFront,
+  updatingTokenAfterChangingProfilePicture(
+    decodeToken: DecodeTokenFromFront,
   ): Observable<string> {
     if (decodeToken) {
       const { user, iat } = decodeToken;
