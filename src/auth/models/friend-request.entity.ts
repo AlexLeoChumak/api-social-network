@@ -1,8 +1,9 @@
-import { Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { UserEntity } from './user.entity';
+import { FriendRequestStatusType } from './friend-request.interface';
 
-@Entity('user')
+@Entity('request')
 export class FriendRequestEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -15,4 +16,7 @@ export class FriendRequestEntity {
     (userEntity) => userEntity.receivedFriendRequests,
   )
   receiver: UserEntity;
+
+  @Column()
+  status: FriendRequestStatusType;
 }
