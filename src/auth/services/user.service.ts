@@ -104,4 +104,36 @@ export class UserService {
       }),
     );
   }
+
+  sendFriendRequest(
+    receiverId: number,
+    creator: User,
+  ): Observable<FriendRequest | { error: string }> {
+    if (receiverId === creator.id) {
+      return of({ error: 'It is not possible to add yourself' });
+    }
+
+    return this.findUserByid(receiverId).pipe(
+      switchMap((receiver: User) => {
+        return this.hasRequestBeenSentOrReceived(creator, receiver).pipe(
+          switchMap((hasRequestBeenSentOrReceived: boolean) => {
+            if (hasRequestBeenSentOrReceived) {
+              return of({
+                error:
+                  'A friend request has already been sent of received to your account!',
+              });
+            }
+
+            const friendRequest: FriendRequest = {
+              creator,
+              receiver,
+              status: 'pending',
+            };
+
+            return from(this.friendRequestRepository.save(friendRequest));
+          }),
+        );
+      }),
+    );
+  }
 }
