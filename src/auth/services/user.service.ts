@@ -19,6 +19,7 @@ import { FriendRequestEntity } from '../models/friend-request.entity';
 import {
   FriendRequest,
   FriendRequestStatus,
+  FriendRequestStatusType,
 } from '../models/friend-request.interface';
 
 @Injectable()
@@ -165,6 +166,22 @@ export class UserService {
     return from(
       this.friendRequestRepository.findOne({
         where: [{ id: friendRequestId }],
+      }),
+    );
+  }
+
+  respondToFriendRequest(
+    friendRequestId: number,
+    statusResponse: FriendRequestStatusType,
+  ): Observable<FriendRequestStatus> {
+    return this.getFriendRequestUserById(friendRequestId).pipe(
+      switchMap((friendRequest: FriendRequest) => {
+        return from(
+          this.friendRequestRepository.save({
+            ...friendRequest,
+            status: statusResponse,
+          }),
+        );
       }),
     );
   }
