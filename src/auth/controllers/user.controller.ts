@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Request,
   Res,
   UploadedFile,
@@ -27,6 +28,7 @@ import { User } from '../models/user.interface';
 import {
   FriendRequest,
   FriendRequestStatus,
+  FriendRequestStatusType,
 } from '../models/friend-request.interface';
 
 @Controller('user')
@@ -117,6 +119,18 @@ export class UserController {
     return this.userService.getFriendRequestStatus(
       parseInt(receiverId),
       req.user,
+    );
+  }
+
+  @UseGuards(JwtGuard)
+  @Put('friend-request/response/:friendRequestId')
+  respondToFriendRequest(
+    @Param('friendRequestId') friendRequestId: string,
+    @Body() statusResponse: FriendRequestStatusType,
+  ): Observable<FriendRequestStatus> {
+    return this.userService.respondToFriendRequest(
+      parseInt(friendRequestId),
+      statusResponse,
     );
   }
 }
