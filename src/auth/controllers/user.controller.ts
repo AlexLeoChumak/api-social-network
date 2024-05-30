@@ -24,7 +24,10 @@ import {
 } from '../helpers/image-storage';
 import { DecodeTokenFromFront } from '../models/decodeTokenFromFront.interface';
 import { User } from '../models/user.interface';
-import { FriendRequest } from '../models/friend-request.interface';
+import {
+  FriendRequest,
+  FriendRequestStatusType,
+} from '../models/friend-request.interface';
 
 @Controller('user')
 export class UserController {
@@ -103,5 +106,14 @@ export class UserController {
     @Request() req,
   ): Observable<FriendRequest | { error: string }> {
     return this.userService.sendFriendRequest(parseInt(receiverId), req.user);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get('friend-request/status/:receiverId')
+  getFriendRequestStatus(
+    @Param('receiverId') receiverId: string,
+    @Request() req,
+  ): Observable<FriendRequestStatusType> {
+    return this.userService.getFriendRequestStatus(receiverId, req.user);
   }
 }
