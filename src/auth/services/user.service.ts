@@ -160,4 +160,12 @@ export class UserService {
       }),
     );
   }
+
+  getFriendRequestUserById(friendRequestId: number): Observable<FriendRequest> {
+    return from(
+      this.friendRequestRepository.findOne({
+        where: [{ id: friendRequestId }],
+      }),
+    );
+  }
 }
