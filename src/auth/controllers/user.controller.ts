@@ -26,7 +26,7 @@ import { DecodeTokenFromFront } from '../models/decodeTokenFromFront.interface';
 import { User } from '../models/user.interface';
 import {
   FriendRequest,
-  FriendRequestStatusType,
+  FriendRequestStatus,
 } from '../models/friend-request.interface';
 
 @Controller('user')
@@ -113,7 +113,10 @@ export class UserController {
   getFriendRequestStatus(
     @Param('receiverId') receiverId: string,
     @Request() req,
-  ): Observable<FriendRequestStatusType> {
-    return this.userService.getFriendRequestStatus(receiverId, req.user);
+  ): Observable<FriendRequestStatus> {
+    return this.userService.getFriendRequestStatus(
+      parseInt(receiverId),
+      req.user,
+    );
   }
 }
