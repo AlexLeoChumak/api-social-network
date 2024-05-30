@@ -16,7 +16,10 @@ import { User } from '../models/user.interface';
 import { UserEntity } from '../models/user.entity';
 import { DecodeTokenFromFront } from '../models/decodeTokenFromFront.interface';
 import { FriendRequestEntity } from '../models/friend-request.entity';
-import { FriendRequest } from '../models/friend-request.interface';
+import {
+  FriendRequest,
+  FriendRequestStatus,
+} from '../models/friend-request.interface';
 
 @Injectable()
 export class UserService {
@@ -133,6 +136,27 @@ export class UserService {
             return from(this.friendRequestRepository.save(friendRequest));
           }),
         );
+      }),
+    );
+  }
+
+  getFriendRequestStatus(
+    receiverId: number,
+    currentUser: User,
+  ): Observable<FriendRequestStatus> {
+    return this.findUserByid(receiverId).pipe(
+      switchMap((receiver: User) => {
+        return from(
+          this.friendRequestRepository.findOne({
+            where: {
+              creator: currentUser,
+              receiver: receiver,
+            },
+          }),
+        );
+      }),
+      switchMap((friendRequest: FriendRequest) => {
+        return of({ status: friendRequest.status });
       }),
     );
   }
