@@ -28,7 +28,6 @@ import { User } from '../models/user.interface';
 import {
   FriendRequest,
   FriendRequestStatus,
-  FriendRequestStatusType,
 } from '../models/friend-request.interface';
 
 @Controller('user')
@@ -126,8 +125,8 @@ export class UserController {
   @Put('friend-request/response/:friendRequestId')
   respondToFriendRequest(
     @Param('friendRequestId') friendRequestId: string,
-    @Body() statusResponse: FriendRequestStatusType,
-  ): Observable<FriendRequestStatus> {
+    @Body() statusResponse: FriendRequestStatus,
+  ): Observable<FriendRequest> {
     return this.userService.respondToFriendRequest(
       parseInt(friendRequestId),
       statusResponse,
