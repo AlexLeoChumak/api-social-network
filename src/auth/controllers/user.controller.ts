@@ -35,6 +35,12 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @UseGuards(JwtGuard)
+  @Get(':userId')
+  findUserById(@Param('userId') userId: string): Observable<User> {
+    return this.userService.findUserByid(parseInt(userId));
+  }
+
+  @UseGuards(JwtGuard)
   @Post('upload')
   @UseInterceptors(FileInterceptor('file', saveImageToStorage))
   uploadImage(
@@ -92,12 +98,6 @@ export class UserController {
     return this.userService
       .updatingTokenAfterChangingProfilePicture(decodeToken)
       .pipe(map((jwt: string) => ({ token: jwt })));
-  }
-
-  @UseGuards(JwtGuard)
-  @Get(':userId')
-  findUserById(@Param('userId') userId: string): Observable<User> {
-    return this.userService.findUserByid(parseInt(userId));
   }
 
   @UseGuards(JwtGuard)
