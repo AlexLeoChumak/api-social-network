@@ -19,6 +19,7 @@ import { FriendRequestEntity } from '../models/friend-request.entity';
 import {
   FriendRequest,
   FriendRequestStatus,
+  FriendRequestStatusType,
 } from '../models/friend-request.interface';
 
 @Injectable()
@@ -156,15 +157,28 @@ export class UserService {
       switchMap((receiver: User) => {
         return from(
           this.friendRequestRepository.findOne({
-            where: {
-              creator: currentUser,
-              receiver: receiver,
-            },
+            where: [
+              {
+                creator: currentUser,
+                receiver: receiver,
+              },
+              {
+                creator: receiver,
+                receiver: currentUser,
+              },
+            ],
+            relations: ['creator', 'receiver'],
           }),
         );
       }),
       switchMap((friendRequest: FriendRequest) => {
-        return of({ status: friendRequest.status });
+        if (friendRequest?.receiver.id === currentUser.id) {
+          return of({
+            status:
+              'waiting-for-current-user-response' as FriendRequestStatusType,
+          });
+        }
+        return of({ status: friendRequest.status || 'not-sent' });
       }),
       catchError((err) => {
         console.error(err);
