@@ -105,6 +105,10 @@ export class UserService {
         if (!friendRequest) return of(false);
         return of(true);
       }),
+      catchError((err) => {
+        console.error(err);
+        return throwError(() => err);
+      }),
     );
   }
 
@@ -137,6 +141,10 @@ export class UserService {
           }),
         );
       }),
+      catchError((err) => {
+        console.error(err);
+        return throwError(() => err);
+      }),
     );
   }
 
@@ -158,6 +166,10 @@ export class UserService {
       switchMap((friendRequest: FriendRequest) => {
         return of({ status: friendRequest.status });
       }),
+      catchError((err) => {
+        console.error(err);
+        return throwError(() => err);
+      }),
     );
   }
 
@@ -165,6 +177,11 @@ export class UserService {
     return from(
       this.friendRequestRepository.findOne({
         where: [{ id: friendRequestId }],
+      }),
+    ).pipe(
+      catchError((err) => {
+        console.error(err);
+        return throwError(() => err);
       }),
     );
   }
@@ -181,6 +198,23 @@ export class UserService {
             status: statusResponse.status,
           }),
         );
+      }),
+      catchError((err) => {
+        console.error(err);
+        return throwError(() => err);
+      }),
+    );
+  }
+
+  getFriendRequestsFromRecipients(user: User): Observable<FriendRequest[]> {
+    return from(
+      this.friendRequestRepository.find({
+        where: [{ receiver: user }],
+      }),
+    ).pipe(
+      catchError((err) => {
+        console.error(err);
+        return throwError(() => err);
       }),
     );
   }
