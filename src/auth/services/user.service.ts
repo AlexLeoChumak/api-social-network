@@ -178,7 +178,7 @@ export class UserService {
               'waiting-for-current-user-response' as FriendRequestStatusType,
           });
         }
-        return of({ status: friendRequest.status || 'not-sent' });
+        return of({ status: friendRequest?.status || 'not-sent' });
       }),
       catchError((err) => {
         console.error(err);
@@ -224,6 +224,7 @@ export class UserService {
     return from(
       this.friendRequestRepository.find({
         where: [{ receiver: user }],
+        relations: ['receiver', 'creator'],
       }),
     ).pipe(
       catchError((err) => {
