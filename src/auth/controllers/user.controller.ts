@@ -3,8 +3,8 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
-  Put,
   Request,
   Res,
   UploadedFile,
@@ -100,6 +100,8 @@ export class UserController {
       .pipe(map((jwt: string) => ({ token: jwt })));
   }
 
+  //adding as a friend
+  //добавление в друзья
   @UseGuards(JwtGuard)
   @Post('friend-request/send/:receiverId')
   sendFriendRequest(
@@ -109,6 +111,7 @@ export class UserController {
     return this.userService.sendFriendRequest(parseInt(receiverId), req.user);
   }
 
+  //статус запроса в друзья
   @UseGuards(JwtGuard)
   @Get('friend-request/status/:receiverId')
   getFriendRequestStatus(
@@ -122,7 +125,7 @@ export class UserController {
   }
 
   @UseGuards(JwtGuard)
-  @Put('friend-request/response/:friendRequestId')
+  @Patch('friend-request/response/:friendRequestId')
   respondToFriendRequest(
     @Param('friendRequestId') friendRequestId: string,
     @Body() statusResponse: FriendRequestStatus,
