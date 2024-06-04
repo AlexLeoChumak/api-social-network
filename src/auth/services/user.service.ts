@@ -90,6 +90,7 @@ export class UserService {
     );
   }
 
+  //проверяет, была ли отправлена или получена заявка на дружбу между двумя пользователями
   hasRequestBeenSentOrReceived(
     creator: User,
     receiver: User,
@@ -97,8 +98,8 @@ export class UserService {
     return from(
       this.friendRequestRepository.findOne({
         where: [
-          { creator, receiver },
-          { creator: receiver, receiver: creator },
+          { creator: { id: creator.id }, receiver: { id: receiver.id } },
+          { creator: { id: receiver.id }, receiver: { id: creator.id } },
         ],
       }),
     ).pipe(
@@ -113,6 +114,7 @@ export class UserService {
     );
   }
 
+  //инициатор отправляет запрос на добавление в друзья
   sendFriendRequest(
     receiverId: number,
     creator: User,
@@ -149,6 +151,7 @@ export class UserService {
     );
   }
 
+  //статус запроса в друзья
   getFriendRequestStatus(
     receiverId: number,
     currentUser: User,
@@ -159,12 +162,12 @@ export class UserService {
           this.friendRequestRepository.findOne({
             where: [
               {
-                creator: currentUser,
-                receiver: receiver,
+                creator: { id: currentUser.id },
+                receiver: { id: receiver.id },
               },
               {
-                creator: receiver,
-                receiver: currentUser,
+                creator: { id: receiver.id },
+                receiver: { id: currentUser.id },
               },
             ],
             relations: ['creator', 'receiver'],
