@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Observable, catchError, from, map, switchMap, throwError } from 'rxjs';
@@ -6,7 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
 import { UserEntity } from '../models/user.entity';
-import { User } from '../models/user.interface';
+import { User } from '../models/user.class';
 
 @Injectable()
 export class AuthService {
@@ -46,34 +46,6 @@ export class AuthService {
     );
   }
 
-  // метод registerAccount до оптимизации
-  //
-  // registerAccount(user: User): Observable<User> {
-  //   const { firstName, lastName, email, password } = user;
-
-  //   return this.hashPassword(password).pipe(
-  //     switchMap((hashedPassword: string) => {
-  //       return from(
-  //         this.userRepository.save({
-  //           firstName,
-  //           lastName,
-  //           email,
-  //           password: hashedPassword,
-  //         }),
-  //       ).pipe(
-  //         map((user: User) => {
-  //           delete user.password;
-  //           return user;
-  //         }),
-  //         catchError((err) => {
-  //           console.error(err);
-  //           return throwError(() => err);
-  //         }),
-  //       );
-  //     }),
-  //   );
-  // }
-
   validateUser(email: string, password: string): Observable<User> {
     return from(
       this.userRepository.findOne({
@@ -91,7 +63,10 @@ export class AuthService {
     ).pipe(
       switchMap((user: User) => {
         if (!user || !user.email) {
-          return throwError(() => new Error('User not found'));
+          throw new HttpException(
+            { status: HttpStatus.NOT_FOUND, error: 'Invalid Credentials' },
+            HttpStatus.NOT_FOUND,
+          );
         }
 
         return from(bcrypt.compare(password, user.password)).pipe(
