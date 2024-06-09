@@ -24,7 +24,7 @@ import {
   saveImageToStorage,
 } from '../helpers/image-storage';
 import { DecodeTokenFromFront } from '../models/decodeTokenFromFront.interface';
-import { User } from '../models/user.interface';
+import { User } from '../models/user.class';
 import {
   FriendRequest,
   FriendRequestStatus,

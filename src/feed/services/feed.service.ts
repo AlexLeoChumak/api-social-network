@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { FeedPostEntity } from '../models/feedPost.entity';
 import { FeedPost } from '../models/feedPost.interface';
-import { User } from 'src/auth/models/user.interface';
+import { User } from 'src/auth/models/user.class';
 
 @Injectable()
 export class FeedService {

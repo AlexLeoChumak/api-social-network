@@ -2,9 +2,10 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Observable, catchError, map, of, switchMap } from 'rxjs';
 
 import { FeedService } from '../services/feed.service';
-import { User } from 'src/auth/models/user.interface';
+
 import { FeedPost } from '../models/feedPost.interface';
 import { UserService } from 'src/auth/services/user.service';
+import { User } from 'src/auth/models/user.class';
 
 @Injectable()
 export class IsCreatorGuard implements CanActivate {
