@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import {
   Observable,
   catchError,
@@ -12,7 +12,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 
-import { User } from '../models/user.interface';
+import { User } from '../models/user.class';
 import { UserEntity } from '../models/user.entity';
 import { DecodeTokenFromFront } from '../models/decodeTokenFromFront.interface';
 import { FriendRequestEntity } from '../models/friend-request.entity';
@@ -39,12 +39,11 @@ export class UserService {
       this.userRepository.findOne({ where: { id }, relations: ['feedPosts'] }),
     ).pipe(
       map((user: User) => {
+        if (!user) {
+          throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        }
         delete user.password;
         return user;
-      }),
-      catchError((err) => {
-        console.error(err);
-        return throwError(() => err);
       }),
     );
   }
@@ -175,12 +174,16 @@ export class UserService {
         );
       }),
       switchMap((friendRequest: FriendRequest) => {
-        if (friendRequest?.receiver.id === currentUser.id) {
+        if (
+          friendRequest?.receiver.id === currentUser.id &&
+          friendRequest.status === 'pending'
+        ) {
           return of({
             status:
               'waiting-for-current-user-response' as FriendRequestStatusType,
           });
         }
+
         return of({ status: friendRequest?.status || 'not-sent' });
       }),
       catchError((err) => {
@@ -212,7 +215,7 @@ export class UserService {
         return from(
           this.friendRequestRepository.save({
             ...friendRequest,
-            status: statusResponse.status,
+            status: statusResponse.status || 'declined',
           }),
         );
       }),
