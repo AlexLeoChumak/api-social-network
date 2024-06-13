@@ -5,17 +5,25 @@ import { FeedController } from './feed.controller';
 import { FeedService } from '../services/feed.service';
 
 describe('FeedController', () => {
-  let service: FeedService;
+  let feedController: FeedController;
+  let feedService: FeedService;
+
+  const mockFeedService = {};
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    const moduleRef: TestingModule = await Test.createTestingModule({
+      controllers: [FeedController],
       providers: [FeedService],
-    }).compile();
+    })
+      .overrideProvider(FeedService)
+      .useValue(mockFeedService)
+      .compile();
 
-    service = module.get<FeedService>(FeedService);
+    feedService = moduleRef.get<FeedService>(FeedService);
+    feedController = moduleRef.get<FeedController>(FeedController);
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(feedController).toBeDefined();
   });
 });
