@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Role } from './role.enum';
-import { FeedPostEntity } from 'src/feed/models/feedPost.entity';
+import { FeedPostEntity } from '../../feed/models/feedPost.entity';
 import { FriendRequestEntity } from './friend-request.entity';
 
 @Entity('user')
