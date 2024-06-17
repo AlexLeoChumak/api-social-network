@@ -16,10 +16,10 @@ import { DeleteResult, UpdateResult } from 'typeorm';
 
 import { FeedService } from '../services/feed.service';
 import { FeedPost } from '../models/feedPost.interface';
-import { JwtGuard } from 'src/auth/guards/jwt.guard';
-// import { Roles } from 'src/auth/decorators/roles.decorator';
-// import { Role } from 'src/auth/models/role.enum';
-// import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { JwtGuard } from '../../auth/guards/jwt.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Role } from 'src/auth/models/role.enum';
+import { RolesGuard } from '../../auth/guards/roles.guard';
 import { IsCreatorGuard } from '../guards/is-creator.guard';
 
 @Controller('feed')
@@ -27,7 +27,7 @@ export class FeedController {
   constructor(private feedService: FeedService) {}
 
   // @Roles(Role.ADMIN, Role.PREMIUM)
-  // @UseGuards(JwtGuard, RolesGuard)
+  @UseGuards(JwtGuard, RolesGuard)
   @UseGuards(JwtGuard)
   @Post()
   create(

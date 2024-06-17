@@ -4,7 +4,7 @@ import { Observable, catchError, map, of, switchMap } from 'rxjs';
 import { FeedService } from '../services/feed.service';
 
 import { FeedPost } from '../models/feedPost.interface';
-import { UserService } from 'src/auth/services/user.service';
+import { UserService } from '../../auth/services/user.service';
 import { User } from 'src/auth/models/user.class';
 
 @Injectable()
