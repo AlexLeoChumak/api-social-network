@@ -64,8 +64,8 @@ export class AuthService {
       switchMap((user: User) => {
         if (!user || !user.email) {
           throw new HttpException(
-            { status: HttpStatus.NOT_FOUND, error: 'Invalid Credentials' },
-            HttpStatus.NOT_FOUND,
+            { status: HttpStatus.FORBIDDEN, error: 'Invalid Credentials' },
+            HttpStatus.FORBIDDEN,
           );
         }
 
