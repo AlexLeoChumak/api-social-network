@@ -141,4 +141,10 @@ export class UserController {
   getFriendRequestsFromRecipients(@Request() req): Observable<FriendRequest[]> {
     return this.userService.getFriendRequestsFromRecipients(req.user);
   }
+
+  @UseGuards(JwtGuard)
+  @Get('friends/my')
+  getFriends(@Request() req): Observable<User[]> {
+    return this.userService.getFriends(req.user);
+  }
 }
