@@ -9,7 +9,7 @@ import {
   throwError,
 } from 'rxjs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, UpdateResult } from 'typeorm';
+import { In, Repository, UpdateResult } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 
 import { User } from '../models/user.class';
@@ -236,6 +236,36 @@ export class UserService {
       catchError((err) => {
         console.error(err);
         return throwError(() => err);
+      }),
+    );
+  }
+
+  getFriends(currentUser: User): Observable<User[]> {
+    return from(
+      this.friendRequestRepository.find({
+        where: [
+          { creator: currentUser, status: 'accepted' },
+          { receiver: currentUser, status: 'accepted' },
+        ],
+        relations: ['creator', 'receiver'],
+      }),
+    ).pipe(
+      switchMap((friends: FriendRequest[]) => {
+        let userIds: number[] = [];
+
+        friends.forEach((friend: FriendRequest) => {
+          if (friend.creator.id === currentUser.id) {
+            userIds.push(friend.receiver.id);
+          } else if (friend.receiver.id === currentUser.id) {
+            userIds.push(friend.creator.id);
+          }
+        });
+
+        return from(
+          this.userRepository.findBy({
+            id: In(userIds),
+          }),
+        );
       }),
     );
   }
