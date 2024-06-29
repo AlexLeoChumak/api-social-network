@@ -1,4 +1,3 @@
-import { UserEntity } from 'src/auth/models/user.entity';
 import {
   Entity,
   JoinTable,
@@ -7,6 +6,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+
+import { UserEntity } from 'src/auth/models/user.entity';
 import { MessageEntity } from './message.entity';
 
 @Entity('conversation')
