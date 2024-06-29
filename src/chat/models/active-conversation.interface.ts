@@ -1,6 +1,6 @@
 export interface ActiveConversation {
   id: number;
-  socketId: number;
+  socketId: string;
   userId: number;
   conversationId: number;
 }
