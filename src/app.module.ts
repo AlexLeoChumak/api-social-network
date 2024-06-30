@@ -7,7 +7,6 @@ import { FeedModule } from './feed/feed.module';
 import { AuthModule } from './auth/auth.module';
 import { APP_FILTER } from '@nestjs/core';
 import { AllExceptionsFilter } from './core/all-exceptions.filter';
-import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -24,12 +23,14 @@ import { ChatModule } from './chat/chat.module';
     }),
     FeedModule,
     AuthModule,
-    ChatModule,
   ],
   controllers: [AppController],
-  providers: [AppService, {
-    provide: APP_FILTER,
-    useClass: AllExceptionsFilter
-  }],
+  providers: [
+    AppService,
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    },
+  ],
 })
 export class AppModule {}
